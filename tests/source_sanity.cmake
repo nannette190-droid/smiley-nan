@@ -1,0 +1,8 @@
+file(READ "${PROJECT_ROOT}/src/PluginProcessor.cpp" PROCESSOR)
+if(NOT PROCESSOR MATCHES "createPluginFilter")
+  message(FATAL_ERROR "Missing plugin factory")
+endif()
+if(NOT PROCESSOR MATCHES "buffer.applyGain")
+  message(FATAL_ERROR "Gain DSP implementation missing")
+endif()
+message(STATUS "Source sanity check passed")
