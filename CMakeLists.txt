@@ -27,6 +27,8 @@ juce_add_plugin(SoundheadGain
   IS_MIDI_EFFECT FALSE
   COPY_PLUGIN_AFTER_BUILD FALSE
 )
+juce_generate_juce_header(SoundheadGain)
+
 target_sources(SoundheadGain PRIVATE
   src/PluginProcessor.cpp
   src/PluginProcessor.h
