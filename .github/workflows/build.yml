@@ -1,0 +1,36 @@
+name: Native plugin builds
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Compile
+        run: cmake --build build --config Release --parallel 2
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure
+      - name: Inspect actual plugin binaries
+        shell: bash
+        run: |
+          python3 scripts/verify_bundles.py build
+      - name: Upload build outputs (not installers)
+        uses: actions/upload-artifact@v4
+        with:
+          name: soundhead-gain-${{ matrix.os }}
+          path: |
+            build/SoundheadGain_artefacts/Release/VST3/
+            build/SoundheadGain_artefacts/Release/AU/
+            build/SoundheadGain_artefacts/VST3/
+            build/SoundheadGain_artefacts/AU/
+          if-no-files-found: error
